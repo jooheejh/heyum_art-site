@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>혜윰예술심리연구소 | 마음을 예술로 빚어내다</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                ivory: '#FFFFFF',
+                wood: '#B8977E',
+                charcoal: '#333333',
+                lightWood: '#D4C2B3'
+              }
+            },
+            fontFamily: {
+              serif: ['Noto Serif KR', 'serif'],
+              sans: ['Pretendard', 'sans-serif'],
+            },
+            animation: {
+              'float-slow': 'float 8s ease-in-out infinite',
+              'float-delayed': 'float 10s ease-in-out 2s infinite',
+              'spin-slow': 'spin 40s linear infinite',
+              'pulse-soft': 'pulse 4s ease-in-out infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0) translateX(0)' },
+                '50%': { transform: 'translateY(-20px) translateX(10px)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #FFFFFF;
+        color: #333333;
+        font-family: 'Pretendard', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .font-serif {
+        font-family: 'Noto Serif KR', serif;
+      }
+      .paint-stroke {
+        filter: blur(40px);
+        opacity: 0.15;
+      }
+      ::selection {
+        background-color: #B8977E;
+        color: white;
+      }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
