@@ -14,19 +14,28 @@ import { SiteConfig, Program, Therapist } from './types';
 
 const App: React.FC = () => {
   const [config, setConfig] = useState<SiteConfig>(() => {
-    const saved = localStorage.getItem('heyum_config_v8');
-    return saved ? JSON.parse(saved) : INITIAL_CONFIG;
+    try {
+      const saved = localStorage.getItem('heyum_config_v9');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (error) {
+      console.error("Failed to load config from localStorage:", error);
+    }
+    return INITIAL_CONFIG;
   });
 
   const [therapists] = useState<Therapist[]>(INITIAL_THERAPISTS);
   const [programs] = useState<Program[]>(INITIAL_PROGRAMS);
 
   useEffect(() => {
-    localStorage.setItem('heyum_config_v8', JSON.stringify(config));
+    localStorage.setItem('heyum_config_v9', JSON.stringify(config));
   }, [config]);
 
   useEffect(() => {
-    document.documentElement.style.setProperty('--brand-point', config.theme.pointColor);
+    if (config.theme?.pointColor) {
+      document.documentElement.style.setProperty('--brand-point', config.theme.pointColor);
+    }
   }, [config.theme.pointColor]);
 
   return (
