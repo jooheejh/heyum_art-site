@@ -8,7 +8,7 @@ export const INITIAL_CONFIG: SiteConfig = {
   contact: {
     phone: "031-811-2274",
     email: "heyum_art@naver.com",
-    address: "경기도 고양시 일산동구 마두동 강송로 169, 503호",
+    address: "경기도 고양시 일산동구 마두동 강송로 169, 한주프라자 503호",
     kakao: "https://pf.kakao.com/",
     instagram: "https://www.instagram.com/heyum.therapy/",
     blog: "https://blog.naver.com/heyum_art"

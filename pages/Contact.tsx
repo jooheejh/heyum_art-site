@@ -1,7 +1,13 @@
 
-import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Phone, Mail, MapPin, Send, Loader2, CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
 import { SiteConfig } from '../types';
+
+declare global {
+  interface Window {
+    naver: any;
+  }
+}
 
 interface ContactProps {
   config: SiteConfig;
@@ -9,6 +15,59 @@ interface ContactProps {
 
 const Contact: React.FC<ContactProps> = ({ config }) => {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const mapContainer = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // 네이버 지도 렌더링 로직
+    if (window.naver && window.naver.maps && mapContainer.current) {
+      const { naver } = window;
+      // 강송로 169 (한주프라자) 좌표: 37.6582, 126.7915
+      const position = new naver.maps.LatLng(37.6582, 126.7915);
+
+      const mapOptions = {
+        center: position,
+        zoom: 17,
+        minZoom: 10,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: naver.maps.Position.TOP_RIGHT
+        }
+      };
+
+      const map = new naver.maps.Map(mapContainer.current, mapOptions);
+
+      // 마커 생성
+      const marker = new naver.maps.Marker({
+        position: position,
+        map: map,
+        title: '혜윰예술심리연구소'
+      });
+
+      // 정보창(InfoWindow) 생성
+      const contentString = [
+        '<div style="padding:15px; min-width:200px; line-height:1.5; font-family: sans-serif;">',
+        '   <h4 style="margin:0 0 5px; color:#B8977E; font-size:14px; font-weight:bold;">혜윰예술심리연구소</h4>',
+        '   <p style="margin:0; font-size:12px; color:#666;">경기도 고양시 일산동구 강송로 169<br />한주프라자 503호</p>',
+        '</div>'
+      ].join('');
+
+      const infowindow = new naver.maps.InfoWindow({
+        content: contentString,
+        backgroundColor: "#fff",
+        borderColor: "#B8977E",
+        borderWidth: 1,
+        anchorSize: new naver.maps.Size(10, 10),
+        pixelOffset: new naver.maps.Point(0, -10)
+      });
+
+      infowindow.open(map, marker);
+
+      // 지도 중심 재설정 (반응형 대응)
+      const handleResize = () => map.setCenter(position);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,8 +97,15 @@ const Contact: React.FC<ContactProps> = ({ config }) => {
     }
   };
 
+  const openNaverMap = () => {
+    // 네이버 지도 장소 연결 (한주프라자 기준)
+    const encodedName = encodeURIComponent("혜윰예술심리연구소");
+    const url = `https://map.naver.com/v5/search/${encodedName}/place/126.7915,37.6582`;
+    window.open(url, '_blank');
+  };
+
   return (
-    <div className="py-24 bg-brand-ivory">
+    <div className="py-24 bg-brand-ivory min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
           <div>
@@ -98,11 +164,11 @@ const Contact: React.FC<ContactProps> = ({ config }) => {
                     className="w-full px-4 py-3 bg-white border border-brand-wood/10 focus:border-brand-wood focus:outline-none transition-colors disabled:opacity-50"
                   >
                     <option value="">선택해주세요</option>
+                    <option value="초기 상담">초기 상담</option>
                     <option value="개인 예술 상담">개인 예술 상담</option>
                     <option value="아동/청소년 프로그램">아동/청소년 프로그램</option>
                     <option value="특수 예술 교육">특수 예술 교육</option>
                     <option value="집단 상담 테라피">집단 상담 테라피</option>
-                    <option value="기타 문의">기타 문의</option>
                   </select>
                 </div>
                 <div>
@@ -139,7 +205,7 @@ const Contact: React.FC<ContactProps> = ({ config }) => {
           </div>
 
           <div className="space-y-12">
-            <div className="bg-white p-10 shadow-sm">
+            <div className="bg-white p-10 shadow-sm border border-brand-wood/5">
               <h3 className="text-xl font-serif font-bold mb-8">오시는 길</h3>
               <div className="space-y-6 text-sm">
                 <div className="flex items-start">
@@ -157,13 +223,31 @@ const Contact: React.FC<ContactProps> = ({ config }) => {
               </div>
             </div>
 
-            {/* Map Placeholder */}
-            <div className="bg-gray-200 h-80 relative flex items-center justify-center text-gray-400">
-               <div className="text-center">
-                 <MapPin size={48} className="mx-auto mb-2 opacity-50" />
-                 <p className="text-sm">지도 API가 이곳에 렌더링됩니다.</p>
-                 <p className="text-[10px] uppercase tracking-widest mt-1">Google Maps / Kakao Maps API</p>
-               </div>
+            {/* Naver Map Container */}
+            <div className="space-y-4">
+              <div 
+                ref={mapContainer}
+                className="w-full h-80 bg-gray-100 shadow-inner border border-brand-wood/10 relative overflow-hidden"
+              >
+                {!window.naver && (
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-xs px-10 text-center">
+                    네이버 지도 로딩 중... <br/>(Client ID가 필요하거나 스크립트 로드 중입니다)
+                  </div>
+                )}
+              </div>
+              <button 
+                onClick={openNaverMap}
+                className="w-full py-3 bg-white border border-brand-wood/20 text-brand-charcoal text-xs font-bold uppercase tracking-widest flex items-center justify-center hover:bg-[#03C75A] hover:text-white transition-all shadow-sm group"
+              >
+                네이버 지도에서 크게보기 <ExternalLink size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+
+            <div className="bg-brand-wood/5 p-8 border-l-4 border-brand-wood">
+              <p className="text-xs font-bold text-brand-wood uppercase tracking-widest mb-2">Parking</p>
+              <p className="text-[13px] text-brand-charcoal leading-relaxed">
+                한주프라자 지상, 기계식 지하 주차장 이용이 가능합니다.
+              </p>
             </div>
           </div>
         </div>
