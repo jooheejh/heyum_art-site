@@ -8,11 +8,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@300;400;600&display=swap" rel="stylesheet">
     <script>
+      // 에러 핸들링 및 디버깅을 위한 스크립트
       window.addEventListener('error', function(e) {
-        if (e.message.indexOf('Script error') > -1) {
-          console.warn('External script loading error. Check Client ID or CORS.');
-        }
+        console.error('Runtime error:', e.error);
       });
+      
       tailwind.config = {
         theme: {
           extend: {
@@ -54,26 +54,49 @@
       .font-serif {
         font-family: 'Noto Serif KR', serif;
       }
-      .paint-stroke {
-        filter: blur(40px);
-        opacity: 0.15;
-      }
       ::selection {
         background-color: #B8977E;
         color: white;
       }
-      .hide-scrollbar::-webkit-scrollbar { display: none; }
-      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      /* 로딩 애니메이션 */
+      #initial-loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background: #FFFFFF;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+      }
+      .loader-dots span {
+        width: 8px;
+        height: 8px;
+        margin: 0 4px;
+        background: #B8977E;
+        border-radius: 50%;
+        display: inline-block;
+        animation: loader-dots 1.4s infinite ease-in-out both;
+      }
+      .loader-dots span:nth-child(1) { animation-delay: -0.32s; }
+      .loader-dots span:nth-child(2) { animation-delay: -0.16s; }
+      @keyframes loader-dots {
+        0%, 80%, 100% { transform: scale(0); }
+        40% { transform: scale(1.0); }
+      }
     </style>
     <script type="importmap">
 {
   "imports": {
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
-    "react-dom": "https://esm.sh/react-dom@^19.2.4",
-    "react-dom/client": "https://esm.sh/react-dom@^19.2.4/client",
-    "react": "https://esm.sh/react@^19.2.4",
-    "react/jsx-runtime": "https://esm.sh/react@^19.2.4/jsx-runtime",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
+    "react-router-dom": "https://esm.sh/react-router-dom@6.28.1?deps=react@19.0.0",
+    "lucide-react": "https://esm.sh/lucide-react@0.469.0?deps=react@19.0.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "react/": "https://esm.sh/react@^19.2.4/"
   }
@@ -81,7 +104,27 @@
 </script>
   </head>
   <body>
+    <div id="initial-loader">
+      <div class="text-center">
+        <div class="loader-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <p style="margin-top: 1rem; color: #B8977E; font-size: 12px; font-family: 'Noto Serif KR', serif; letter-spacing: 0.2em;">마음을 예술로 빚어내는 중...</p>
+      </div>
+    </div>
+    
     <div id="root"></div>
+    
+    <script type="module">
+      // 로딩 화면 제거 로직
+      window.addEventListener('load', () => {
+        const loader = document.getElementById('initial-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => loader.remove(), 500);
+        }
+      });
+    </script>
     <script type="module" src="index.tsx"></script>
   </body>
 </html>
