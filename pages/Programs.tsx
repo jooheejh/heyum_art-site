@@ -21,24 +21,28 @@ const Programs: React.FC<ProgramsProps> = ({ programs }) => {
         return {
           time: '주 1회, 40분 세션, 10분 부모상담 (협의가능)',
           method: '대면',
+          subject: '음악치료 / 미술치료',
           note: '모든 도구는 연구소에서 제공합니다.'
         };
       case '개인 예술 상담':
         return {
           time: '주 1회, 50분 세션',
           method: '대면',
+          subject: '음악치료 / 미술치료',
           note: '모든 도구는 연구소에서 제공합니다.'
         };
       case '집단 상담 테라피':
         return {
           time: '40분 세션 (시간, 횟수 협의 가능)',
           method: '대면',
+          subject: '음악치료 / 미술치료',
           note: '모든 도구는 연구소에서 제공합니다.'
         };
       case '특수 예술 교육':
         return {
           time: '주 1회, 50분 수업',
           method: '대면',
+          subject: '피아노 레슨 / 미술 교육',
           note: '모든 도구는 연구소에서 제공합니다.'
         };
       default:
@@ -62,7 +66,7 @@ const Programs: React.FC<ProgramsProps> = ({ programs }) => {
 
         <div className="space-y-12">
           {programs.map((program, idx) => {
-            const details = getProgramDetails(program.title);
+            const details = getProgramDetails(program.title) as any;
             return (
               <div 
                 key={program.id} 
@@ -92,6 +96,13 @@ const Programs: React.FC<ProgramsProps> = ({ programs }) => {
                       <strong className="w-20 flex-shrink-0 text-brand-charcoal">방식</strong>
                       <span>{details.method}</span>
                     </li>
+                    {details.subject && (
+                      <li className="flex items-center text-sm text-gray-600">
+                        <span className="w-1.5 h-1.5 bg-brand-wood rounded-full mr-4"></span>
+                        <strong className="w-20 flex-shrink-0 text-brand-charcoal">분야</strong>
+                        <span>{details.subject}</span>
+                      </li>
+                    )}
                     <li className="flex items-center text-sm text-gray-600">
                       <span className="w-1.5 h-1.5 bg-brand-wood rounded-full mr-4"></span>
                       <strong className="w-20 flex-shrink-0 text-brand-charcoal">안내사항</strong>

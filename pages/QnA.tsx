@@ -8,12 +8,13 @@ interface QnAProps {
   config: SiteConfig;
 }
 
-const QnA: React.FC<QnAProps> = ({ config }) => {
-  // 강조 문구 컴포넌트: 밑줄 제거, 굵게만 처리
-  const Emphasis = ({ children }: { children: React.ReactNode }) => (
-    <strong className="font-bold text-brand-charcoal">{children}</strong>
-  );
+// 강조 문구 컴포넌트: 밑줄 제거, 굵게만 처리
+// TS의 children 누락 오류를 방지하기 위해 React.FC 타입을 명시적으로 사용하고 컴포넌트 외부로 이동
+const Emphasis: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <strong className="font-bold text-brand-charcoal">{children}</strong>
+);
 
+const QnA: React.FC<QnAProps> = ({ config }) => {
   return (
     <div className="py-24 bg-brand-ivory min-h-screen font-sans">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

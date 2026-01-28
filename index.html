@@ -7,9 +7,12 @@
     <title>혜윰예술심리연구소 | 마음을 예술로 빚어내다</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- 네이버 지도 SDK (Client ID가 필요합니다) -->
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_NAVER_MAPS_CLIENT_ID"></script>
     <script>
+      window.addEventListener('error', function(e) {
+        if (e.message.indexOf('Script error') > -1) {
+          console.warn('External script loading error. Check Client ID or CORS.');
+        }
+      });
       tailwind.config = {
         theme: {
           extend: {
